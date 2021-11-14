@@ -1,0 +1,19 @@
+{
+  "name": "firenas",
+  "version": "1.0.0",
+  "description": "A CLI tool for creating a remote firebase-hosted filesystem that syncs between all of your devices. ",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "fn": "src/index.js",
+    "firenas": "src/index.js"
+  },  
+  "author": "Sri Pranav Kunda",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^10.0.0",
+    "yargs": "^17.2.1"
+  }
+}
