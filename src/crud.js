@@ -41,8 +41,10 @@ async function ru(id) {
   const tmp = p.join(data, `tmp.${n}`); 
   const file = await admin.storage().bucket().file(n); 
   await file.createReadStream().pipe(fs.createWriteStream(tmp));
-  exec(`${_cliopen()} ${tmp}`, async () => {
-    await fs.createReadStream(tmp).pipe(file.createWriteStream());  
+  exec(`${_cliopen()} ${tmp}`, async (e) => {
+    if (e) throw Error(e);
+    await fs.createReadStream(tmp).pipe(file.createWriteStream());
+    fs.unlink(tmp, () => {});
   });
   return "\x1b[36mRequest Completed Successfully\x1b[0m";
 }
@@ -80,7 +82,6 @@ function i(path) {
     });
   });
   fs.unlink(path, () => {});
-  return "\x1b[36mRequest Completed Successfully\x1b[0m";
 }
 
 async function _g() {
