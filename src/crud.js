@@ -82,6 +82,7 @@ function i(path) {
     });
   });
   fs.unlink(path, () => {});
+  return "\x1b[36mRequest Completed Successfully\x1b[0m";
 }
 
 async function _g() {
