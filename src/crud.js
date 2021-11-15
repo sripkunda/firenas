@@ -38,7 +38,7 @@ async function ru(id) {
   if (typeof id === 'undefined') throw Error("Error: Invalid ID.");
   const n = ((await _g())[id])?.name; 
   if (!n) throw Error("Error: File not found.");
-  const tmp = p.join(data, `tmp.${n}`); 
+  const tmp = p.join(data, `tmp.${n.split(" ").join("_")}`); 
   const file = await admin.storage().bucket().file(n); 
   await file.createReadStream().pipe(fs.createWriteStream(tmp));
   exec(`${_cliopen()} ${tmp}`, async (e) => {
@@ -99,6 +99,5 @@ function _cliopen() {
      default: return 'xdg-open';
   }
 }
-
 
 module.exports = { c, ru, d, dl, ls, i };
