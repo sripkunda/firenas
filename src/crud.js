@@ -19,19 +19,19 @@ if (serviceAccount)
     storageBucket: `${serviceAccount.project_id}.appspot.com`,
   });
 
-function c(path, keep, name) {
+async function c(path, keep, name) {
   if (!path) throw Error("Error: Invalid path.");
-  admin
+  return await admin
     .storage()
     .bucket()
     .upload(path)
-    .then(() => {
+    .then(async () => {
       if (!keep) fs.unlink(path, () => {});
+      return "\x1b[36mFile Uploaded Successfully\x1b[0m";
     })
     .catch((e) => {
       throw Error(e);
     });
-  return "\x1b[36mFile Uploaded Successfully\x1b[0m";
 }
 
 async function ru(id) {
@@ -40,11 +40,13 @@ async function ru(id) {
   if (!n) throw Error("Error: File not found.");
   const tmp = p.join(data, `tmp.${n.split(" ").join("_")}`); 
   const file = await admin.storage().bucket().file(n); 
-  await file.createReadStream().pipe(fs.createWriteStream(tmp));
-  exec(`${_cliopen()} ${tmp}`, async (e) => {
-    if (e) throw Error(e);
-    await fs.createReadStream(tmp).pipe(file.createWriteStream());
-    fs.unlink(tmp, () => {});
+  const s = file.createReadStream().pipe(fs.createWriteStream(tmp));
+  s.on("close", () => {
+    return exec(`${_cliopen()} ${tmp}`, async (e) => {
+      if (e) throw Error(e);
+      await fs.createReadStream(tmp).pipe(file.createWriteStream());
+      fs.unlink(tmp, () => {});
+    });
   });
   return "\x1b[36mRequest Completed Successfully\x1b[0m";
 }
@@ -53,7 +55,7 @@ async function dl(id) {
   if (typeof id === 'undefined') throw Error("Error: Invalid ID.");
   const n = ((await _g())[id])?.name; 
   if (!n) throw Error("Error: File not found.");
-  await admin.storage().bucket().file(n).createReadStream().pipe(fs.createWriteStream(n));
+  const s = admin.storage().bucket().file(n).createReadStream().pipe(fs.createWriteStream(n));
   return `\x1b[36mFile Downloaded Successfully (${n})\x1b[0m`; 
 }
 
@@ -67,7 +69,7 @@ async function d(id) {
 
 async function ls() {
   return (await _g().then((files) => {
-      return files.map((e, i) => `${e.id} [id=${i}]`);
+      return files.length ? files.map((e, i) => `${e.id} [id=${i}]`) : ["No files stored."];
   })).join("\n");
 }
 
