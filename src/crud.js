@@ -42,7 +42,7 @@ async function ru(id) {
   const file = await admin.storage().bucket().file(n); 
   const s = file.createReadStream().pipe(fs.createWriteStream(tmp));
   s.on("close", () => {
-    return exec(`${_cliopen()} ${tmp}`, async (e) => {
+    return exec(`${_cliopen()} "${tmp}"`, async (e) => {
       if (e) throw Error(e);
       await fs.createReadStream(tmp).pipe(file.createWriteStream());
       fs.unlink(tmp, () => {});
@@ -69,7 +69,7 @@ async function d(id) {
 
 async function ls() {
   return (await _g().then((files) => {
-      return files.length ? files.map((e, i) => `${e.id} [id=${i}]`) : ["No files stored."];
+      return files.length ? files.map((e, i) => `${decodeURI(e.id)} [id=${i}]`) : ["No files stored."];
   })).join("\n");
 }
 

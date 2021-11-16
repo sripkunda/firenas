@@ -1,7 +1,7 @@
 {
   "name": "firenas",
-  "version": "1.0.0",
-  "description": "A CLI tool for creating a remote firebase-hosted filesystem that syncs between all of your devices. ",
+  "version": "1.0.2",
+  "description": "A CLI tool for creating a remote firebase-hosted filesystem.",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
