@@ -67,10 +67,10 @@ async function d(id) {
   return "\x1b[31mFile Deleted Successfully\x1b[0m";
 }
 
-async function ls() {
-  return (await _g().then((files) => {
+async function ls(s) {
+  return (s ||(await _g().then((files) => {
       return files.length ? files.map((e, i) => `${decodeURI(e.id)} [id=${i}]`) : ["No files stored."];
-  })).join("\n");
+  }))).join("\n");
 }
 
 function i(path) {
@@ -85,6 +85,13 @@ function i(path) {
   });
   fs.unlink(path, () => {});
   return "\x1b[36mRequest Completed Successfully\x1b[0m";
+}
+
+async function s() {
+  const songs = await _g(); 
+  return (
+    ls(s) + `File Count: ${songs.length}\nData Space Used: ${songs.reduce((p, c) => p + (parseFloat(c.metadata.size) || 0), 0) / (Math.pow(10, 6))} MB\nBucket: ${serviceAccount.project_id}.appspot.com`
+  )
 }
 
 async function _g() {
@@ -102,4 +109,4 @@ function _cliopen() {
   }
 }
 
-module.exports = { c, ru, d, dl, ls, i };
+module.exports = { c, ru, d, dl, ls, i, s };

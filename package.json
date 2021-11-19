@@ -1,6 +1,6 @@
 {
   "name": "firenas",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A CLI tool for creating a remote firebase-hosted filesystem.",
   "main": "",
   "scripts": {
@@ -9,7 +9,7 @@
   "bin": {
     "fn": "src/index.js",
     "firenas": "src/index.js"
-  },  
+  },
   "author": "Sri Pranav Kunda",
   "license": "MIT",
   "dependencies": {
