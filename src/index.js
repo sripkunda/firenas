@@ -43,13 +43,24 @@ yargs(hideBin(process.argv))
   }, (argv) => {
     exec(crud.d, argv.verbose, argv.id); 
   })
-  .command('set [key]', 'authorize firebase to create filesystem.', (yargs) => {
+  .command('set [key] [id]', 'authorize firebase to create filesystem; if [id] is not provided, then the existing key will be replaced.', (yargs) => {
     return yargs
       .positional('key', {
         describe: 'path to private key json file (consumes json file).',
       })
+      .positional('id', {
+        describe: 'the id number of this key, in the case that you want multiple storage buckets.'
+      })
   }, (argv) => {
-    exec(crud.i, argv.verbose, argv.key); 
+    exec(crud.i, argv.verbose, argv.key, argv.id); 
+  })
+  .command('use [id]', 'use a certain firebase filesystem as the default key; if [id] is not provided, the default id is 0', (yargs) => {
+    return yargs
+      .positional('id', {
+        describe: 'the id number of the key to use.'
+      })
+  }, (argv) => {
+    exec(crud.sw, argv.verbose, argv.id); 
   })
   .command('i', 'view information regarding remote filesystem.', (yargs) => {
     return yargs
@@ -70,7 +81,7 @@ async function exec(f, verbose, ...args) {
     console.error(
       verbose 
       ? e 
-      : `\x1b[31mAn error occurred. Please run command with verbose logging for more details.\x1b[0m`
+      : `\x1b[31mAn error occurred. Please run command with verbose logging (-v or --verbose) for more details.\x1b[0m`
     ); 
   }
 }

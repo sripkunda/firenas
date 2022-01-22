@@ -73,12 +73,12 @@ async function ls(s) {
   }))).join("\n");
 }
 
-function i(path) {
+function i(path, id="") {
   fs.readFile(path, "utf-8", (e, d) => {
     if (e) throw Error(e);
     fs.mkdir(data, { recursive: true }, (e) => {
       if (e) throw Error(e);
-      fs.writeFile(key, d, (e) => {
+      fs.writeFile(p.join(data, `key${id}.json`), d, (e) => {
         if (e) throw Error(e);
       });
     });
@@ -87,10 +87,26 @@ function i(path) {
   return "\x1b[36mRequest Completed Successfully\x1b[0m";
 }
 
+function sw(n = 0) {
+  const nn = (name) => p.join(data, `${name}.json`); 
+  const temp = nn("temp");
+  const swapped = nn(`key${n}`);
+  fs.rename(swapped, temp, (e) => {
+    if (e) throw Error(e); 
+    fs.rename(key, swapped, (e) => {
+      if (e) throw Error(e); 
+      fs.rename(temp, key, (e) => {
+        if (e) throw Error(e); 
+      });
+    });
+  });
+  return "\x1b[36mRequest Completed Successfully\x1b[0m";
+}
+
 async function s() {
-  const songs = await _g(); 
+  const files = await _g(); 
   return (
-    ls(s) + `File Count: ${songs.length}\nData Space Used: ${songs.reduce((p, c) => p + (parseFloat(c.metadata.size) || 0), 0) / (Math.pow(10, 6))} MB\nBucket: ${serviceAccount.project_id}.appspot.com`
+    `File Count: ${files.length}\nData Space Used: ${files.reduce((p, c) => p + (parseFloat(c.metadata.size) || 0), 0) / (Math.pow(10, 6))} MB\nBucket: ${serviceAccount.project_id}.appspot.com`
   )
 }
 
@@ -109,4 +125,4 @@ function _cliopen() {
   }
 }
 
-module.exports = { c, ru, d, dl, ls, i, s };
+module.exports = { c, ru, d, dl, ls, i, s, sw };
